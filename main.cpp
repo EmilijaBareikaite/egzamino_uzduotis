@@ -3,22 +3,10 @@
 #include <sstream>
 #include <map>
 
-bool isWord(const std::string& str) {
+bool YraZodis(const std::string& str) {
     // Define conditions for considering a string as a word
     return !str.empty() && str != "—" && str != "„" && str != "•" && str != " “ " &&str != "–";
 }
-
-std::string removeQuotationMarks(const std::string& word) {
-    std::string cleanedWord;
-    for (wchar_t c : word) {
-        if (c != L'„' && c != L'“') {
-            cleanedWord += c;
-        }
-    }
-    return cleanedWord;
-}
-
-
 
 int main() {
     
@@ -36,17 +24,17 @@ int main() {
     std::map<std::string, int> zodziuMap;
 
     // skaitome teksto eilute, o tada turint eilute skaitome po zodi
-    std::string line;
-    while (std::getline(inputFile, line)) {
-        std::istringstream iss(line);
-        std::string word;
+    std::string eilute;
+    while (std::getline(inputFile, eilute)) {
+        std::istringstream iss(eilute);
+        std::string zodis;
 
-        while (iss >> word) {
+        while (iss >> zodis) {
             // Istriname skyrybos zenklus
-            word.erase(std::remove_if(word.begin(), word.end(), ispunct), word.end());
-            std::string cleanedWord = removeQuotationMarks(word);
+            zodis.erase(std::remove_if(zodis.begin(), zodis.end(), ispunct), zodis.end());
+            
             // padidiname dabartiniam zodziui skaiciu
-            if (isWord(cleanedWord) ) zodziuMap[cleanedWord]++;
+            if (YraZodis(zodis) ) zodziuMap[zodis]++;
         }
     }
 
@@ -62,9 +50,9 @@ int main() {
     
     outputFile << std::left<<std::setw(20)<< "Zodis" << std::left<<std::setw(10)<<"Kiek kartu pasikartojo"<< '\n';
     // jeigu zodis buvo parasytas daugiau nei viena karta ji spausdiname
-    for (const auto& entry : zodziuMap) {
-        if (entry.second > 1) {
-            outputFile << std::left<<std::setw(20)<<entry.first << std::left<<std::setw(10)<<entry.second << '\n';
+    for (const auto& a : zodziuMap) {
+        if (a.second > 1) {
+            outputFile << std::left<<std::setw(20)<<a.first << std::left<<std::setw(10)<<a.second << '\n';
         }
     }
 
