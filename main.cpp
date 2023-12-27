@@ -21,11 +21,14 @@ int main() {
     }
 
     // sukuriame map, skirta kaupti zodzius ir skaiciu, kiek kartu buvo naudotas zodis
-    std::map<std::string, int> zodziuMap;
+    std::map<std::string, std::pair<int, std::vector<int>>> zodziuMap;
 
     // skaitome teksto eilute, o tada turint eilute skaitome po zodi
     std::string eilute;
+    int lineNumber = 0;
+    
     while (std::getline(inputFile, eilute)) {
+        ++lineNumber;
         std::istringstream iss(eilute);
         std::string zodis;
 
@@ -34,7 +37,9 @@ int main() {
             zodis.erase(std::remove_if(zodis.begin(), zodis.end(), ispunct), zodis.end());
             
             // padidiname dabartiniam zodziui skaiciu
-            if (YraZodis(zodis) ) zodziuMap[zodis]++;
+            if (YraZodis(zodis)) {auto& info = zodziuMap[zodis];
+                info.first++;
+                info.second.push_back(lineNumber);}
         }
     }
 
@@ -48,13 +53,22 @@ int main() {
         return 1;
     }
     
-    outputFile << std::left<<std::setw(20)<< "Zodis" << std::left<<std::setw(10)<<"Kiek kartu pasikartojo"<< '\n';
-    // jeigu zodis buvo parasytas daugiau nei viena karta ji spausdiname
+    outputFile << std::left<<std::setw(20)<< "Zodis" << std::left<<std::setw(15)<<"Kartu sk."<< std::left<<std::setw(10)<<"Eilutes nr."<<'\n';
+    
+    
+    // jeigu zodis buvo parasytas daugiau nei viena karta ji spausdiname, kartu su skaiciumi, kiek kartu buvo parasytas, bei eiluciu sk., kur galima rasti zodi
+  
     for (const auto& a : zodziuMap) {
-        if (a.second > 1) {
-            outputFile << std::left<<std::setw(20)<<a.first << std::left<<std::setw(10)<<a.second << '\n';
-        }
-    }
+         if (a.second.first > 1) {
+             outputFile << std::left << std::setw(20) << a.first << std::left << std::setw(15) << a.second.first;
+
+             for (int eilutesnr : a.second.second) {
+                 outputFile << eilutesnr<< ", ";
+             }
+
+             outputFile << '\n';
+         }
+     }
 
     outputFile.close();
 
